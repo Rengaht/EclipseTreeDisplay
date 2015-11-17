@@ -1,0 +1,8 @@
+{
+   "NOTHING" : "pipi",
+   "TREE_IN_TIME" : 4500.0,
+   "TREE_TIME" : 10000.0,
+   "SERVER":"http://192.168.2.199/eclipse/s/eclipse.php",
+   "MAX_TREE":10,
+   "MACHINE_ID":0
+}
