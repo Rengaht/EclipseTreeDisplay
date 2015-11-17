@@ -20,6 +20,8 @@ class GlobalParam{
 		float _tree_in_time;
 		string _nothing;
 
+		float _clock_start_time,_clock_end_time;
+
 		string _server_url;
 
 		int _max_tree;
@@ -27,6 +29,8 @@ class GlobalParam{
 		int _machine_id;
 
 		int _delta_second_to_server;
+
+		
 
 
 		GlobalParam(){}
@@ -75,6 +79,9 @@ class GlobalParam{
 
 			_machine_id=root.get("MACHINE_ID",0).asInt();
 
+			_clock_start_time=root["CLOCK_START"].asDouble()*1000;
+			_clock_end_time=root["CLOCK_END"].asDouble()*1000;
+
 		}
 		Json::Value createDefaultJson(){
 			
@@ -85,6 +92,9 @@ class GlobalParam{
 			root["SERVER"]="http://artgital.com";
 			root["MAX_TREE"]=10;
 			root["MACHINE_ID"]=0;
+			root["CLOCK_START"]=5;
+			root["CLOCK_END"]=80;
+
 
 			writeJson(root,ParamFilePath);
 
@@ -113,6 +123,8 @@ class GlobalParam{
 			root["SERVER"]=_server_url;
 			root["MAX_TREE"]=_max_tree;
 			root["MACHINE_ID"]=_machine_id;
+			root["CLOCK_START"]=_clock_start_time;
+			root["CLOCK_END"]=_clock_end_time;
 
 
 			writeJson(root,ParamFilePath);

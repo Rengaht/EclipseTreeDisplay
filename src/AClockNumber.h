@@ -49,6 +49,21 @@ class AClockNumber{
 			_anim_show.Restart();
 			_is_show=!_is_show;
 		}
+		void setVisible(bool visible){
+			if(visible && !_is_show){
+				ofLog()<<"Show Clock!!";
+				_anim_show.Restart();
+				_is_show=true;
+				return;
+			}
+			if(!visible && _is_show){
+				ofLog()<<"Hide Clock!!";
+				_anim_show.Restart();
+				_is_show=false;
+				return;			
+			}
+			
+		}
 		
 
 	private:

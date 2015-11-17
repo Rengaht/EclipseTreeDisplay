@@ -73,6 +73,10 @@ void ofApp::update(){
 				//ATreeImage::GetInstance()->_mov_bt.stop();
 				goNextShow();
 			}
+			if(_time_btw_show<=GlobalParam::GetInstance()->_bt_time-GlobalParam::GetInstance()->_clock_end_time) _clock_num.setVisible(false);
+			else{
+				if(_time_btw_show<=GlobalParam::GetInstance()->_bt_time-GlobalParam::GetInstance()->_clock_start_time) _clock_num.setVisible(true);
+			}
 			break;
 		case S_KV:			
 			if(ATreeImage::GetInstance()->_mov_kv[_index_kv].getIsMovieDone() || _time_btw_show<-1000){
@@ -137,7 +141,7 @@ void ofApp::draw(){
 	}
 	ofPopStyle();
 
-	_clock_num.draw();
+	
 
 
 }
@@ -293,7 +297,7 @@ void ofApp::httpResponse(ofxHttpResponse &response){
 	
 	if(response.status!=200){ // timeout fail
 		if(!_init_request_finished){ // cannot get init-data
-			
+			httpUtils.clearQueue();
 			sendSlackLog("[ERR] Cannot get init-data!");
 
 			readSavedInitData();
@@ -301,11 +305,11 @@ void ofApp::httpResponse(ofxHttpResponse &response){
 			goNextShow();
 
 		}else{ // cannot get new tree			
-			
+			httpUtils.clearQueue();
 			sendSlackLog("[ERR] Cannot get new tree");
 			playTree(_time_btw_show);
 			
-			httpUtils.clearQueue();
+			
 		}
 		
 		return;
@@ -318,6 +322,8 @@ void ofApp::httpResponse(ofxHttpResponse &response){
 	Json::Reader reader;
 	bool parse_success=reader.parse(response.responseBody,root);
 	if(!parse_success){
+		if(response.responseBody.getText()=="ok") return;
+
 		ofLog()<<"Failed to parse configuration\n"
 				<<reader.getFormatedErrorMessages();
 
@@ -372,7 +378,7 @@ void ofApp::httpResponse(ofxHttpResponse &response){
 			ATree t=ATree(atree["TreeCode"].asString(),atree["ToName"].asString(),atree["FromName"].asString(),atree["Message"].asString());
 			insertNewTree(t);
 			
-			sendSlackLog("[Info] Get New Tree: (from "+atree["FromName"].asString()+", to "+atree["ToName"].asString());
+			sendSlackLog("[Info] Get New Tree: ("+atree["FromName"].asString()+" -> "+atree["ToName"].asString()+")");
 		}
 		/*_cur_tree_index=(_cur_tree_index+1)%_vec_tree.size();*/
 		playTree(_time_btw_show);
@@ -496,7 +502,8 @@ void ofApp::startBtwShowTimer(int now_code){
 
 void ofApp::findNextShow(ShowType& type, float& due_time){
 	int now_code=GlobalParam::GetInstance()->getCalibTimeCode();
-	
+	ofLog()<<"Find Show at "<<now_code;
+
 	auto itr=_map_schedule.find(now_code);
 	if(itr==_map_schedule.end()){
 		int a=4000;
@@ -551,7 +558,7 @@ void ofApp::readSavedInitData(){
 	GlobalParam::GetInstance()->_kv_time=ofToInt(timeset["KV_T"].asString())*1000;
 	GlobalParam::GetInstance()->_tree_time=ofToInt(timeset["TREE_T"].asString())*1000;
 	GlobalParam::GetInstance()->_bt_time=ofToInt(timeset["BT_T"].asString())*1000;
-	GlobalParam::GetInstance()->_delta_second_to_server=ofToInt(timeset["S_T"].asString())-GlobalParam::GetInstance()->getTimeCode();
+	GlobalParam::GetInstance()->_delta_second_to_server=0;//ofToInt(timeset["S_T"].asString())-GlobalParam::GetInstance()->getTimeCode();
 
 
 	Json::Value ftable=GlobalParam::GetInstance()->parseFileToJson(GlobalParam::GetInstance()->TimeTableFile);
