@@ -33,12 +33,16 @@ class AClockNumber{
 			ATreeImage::GetInstance()->_image_number[10].draw(0,20);
 
 			ofTranslate(_swid*.5+_cwid*.5,0);
-			drawTwoNumber(ofGetMinutes(),_swid);
+			
+			int cal_time=GlobalParam::GetInstance()->getCalibTimeCode();
+			drawTwoNumber(floor(cal_time/60.0),_swid);
+
+
 			ofTranslate(_swid*1.5+_cwid*.5,0);
 			ATreeImage::GetInstance()->_image_number[10].draw(0,20);
 
 			ofTranslate(_swid*.5+_cwid*.5,0);
-			drawTwoNumber(ofGetSeconds(),_swid);
+			drawTwoNumber(cal_time%60,_swid);
 			
 
 			ofPopMatrix();

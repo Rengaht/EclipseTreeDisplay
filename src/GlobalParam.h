@@ -30,6 +30,7 @@ class GlobalParam{
 
 		int _delta_second_to_server;
 
+		int _deco_count;
 		
 
 
@@ -82,6 +83,8 @@ class GlobalParam{
 			_clock_start_time=root["CLOCK_START"].asDouble()*1000;
 			_clock_end_time=root["CLOCK_END"].asDouble()*1000;
 
+			_deco_count=root["DECO_COUNT"].asInt();
+
 		}
 		Json::Value createDefaultJson(){
 			
@@ -94,6 +97,7 @@ class GlobalParam{
 			root["MACHINE_ID"]=0;
 			root["CLOCK_START"]=5;
 			root["CLOCK_END"]=80;
+			root["DECO_COUNT"]=10;
 
 
 			writeJson(root,ParamFilePath);
@@ -125,16 +129,17 @@ class GlobalParam{
 			root["MACHINE_ID"]=_machine_id;
 			root["CLOCK_START"]=_clock_start_time;
 			root["CLOCK_END"]=_clock_end_time;
+			root["DECO_COUNT"]=_deco_count;
 
 
 			writeJson(root,ParamFilePath);
 
 		}
 		int getTimeCode(){
-			return ofGetMinutes()*60+ofGetSeconds();
+			return (ofGetMinutes()*60+ofGetSeconds())%3600;
 		}
 		int getCalibTimeCode(){
-			return getTimeCode()+_delta_second_to_server;
+			return (getTimeCode()+_delta_second_to_server+3600)%3600;
 		}
 
 };

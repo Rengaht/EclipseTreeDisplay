@@ -3,6 +3,8 @@
 #include "ofMain.h"
 #include "ofxHapPlayer.h"
 
+
+
 class ATreeImage{
 	static ATreeImage* _instance;
 public:
@@ -25,6 +27,7 @@ public:
 	ofVideoPlayer _mov_kv[4];
 	ofVideoPlayer _mov_bt;
 
+	ofSoundPlayer  _sound_bgm;
 
 	ATreeImage(){}
 
@@ -48,8 +51,8 @@ public:
 			_image_topdeco[i].loadImage("image/topdeco_"+ofToString(i+1)+".png");
 			_image_topdeco[i].setAnchorPercent(.5,.5);		
 		}
-		_image_deco=new ofImage[5*2];
-		for(int i=0;i<5;++i){
+		_image_deco=new ofImage[GlobalParam::GetInstance()->_deco_count*2];
+		for(int i=0;i<GlobalParam::GetInstance()->_deco_count;++i){
 			_image_deco[i*2].loadImage("image/deco_"+ofToString(i+1)+"_1.png");
 			_image_deco[i*2].setAnchorPercent(.5,.5);
 
@@ -95,6 +98,7 @@ public:
 			_image_number[i].setAnchorPercent(.5,.5);
 		}
 
+		_sound_bgm.loadSound("sound/back_loop.wav");
 
 	}
 	static string ws2s(const wstring& wstr){
